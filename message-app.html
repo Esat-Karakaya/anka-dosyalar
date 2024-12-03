@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Göstermelik Haberleşme Sayfası</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .message-container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .message-header {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message-display {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            background-color: #e6f2ff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: slideIn 0.4s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .message:nth-child(even) {
+            align-self: flex-end;
+            background-color: #f0f0f0;
+            margin-left: auto;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        #messageEditor {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 50px;
+            max-height: 150px;
+            overflow-y: auto;
+            outline: none;
+            transition: border-radius 0.2s;
+        }
+
+		#messageEditor:active {
+            border-radius: 1.3em;
+        }
+
+        #sendButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-radius 0.2s;
+        }
+
+		#sendButton:active { border-radius: 1.3em; }
+
+        #sendButton:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <div class="message-header">
+            Göstermelik Haberleşme Sayfası
+        </div>
+        <div id="messageDisplay" class="message-display"></div>
+        <div class="message-input">
+            <div 
+                id="messageEditor" 
+                contenteditable="true" 
+                placeholder="Göndereceğiniz ileti..."
+            ></div>
+            <button id="sendButton">Gönder</button>
+        </div>
+    </div>
+
+    <script>
+        const messageDisplay = document.getElementById('messageDisplay');
+        const messageEditor = document.getElementById('messageEditor');
+        const sendButton = document.getElementById('sendButton');
+
+        // Set placeholder behavior
+        messageEditor.addEventListener('focus', function() {
+            if (this.textContent === '') {
+                this.innerHTML = '';
+            }
+        });
+
+        messageEditor.addEventListener('blur', function() {
+            if (this.textContent.trim() === '') {
+                this.innerHTML = '';
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+        messageEditor.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const messageText = messageEditor.textContent.trim();
+            
+            if (messageText) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.textContent = messageText;
+                
+                // Add pulse animation to message display
+                messageDisplay.style.animation = 'pulse 0.3s';
+                setTimeout(() => {
+                    messageDisplay.style.animation = '';
+                }, 300);
+
+                messageDisplay.appendChild(messageElement);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                
+                // Clear input
+                messageEditor.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>
